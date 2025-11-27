@@ -1,0 +1,3654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Bible Trivia Expanded (ESV)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0f172a;
+            color: #e5e7eb;
+            min-height: 100vh;
+        }
+
+        .wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 16px 40px;
+        }
+
+        h1 {
+            margin: 0 0 4px;
+            font-size: 1.6rem;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid #374151;
+            color: #9ca3af;
+            margin-left: 6px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: #020617;
+            border-radius: 10px;
+            border: 1px solid #1f2937;
+            padding: 14px 14px 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .card h2 {
+            margin: 0 0 4px;
+            font-size: 1rem;
+        }
+
+        .card small {
+            color: #9ca3af;
+        }
+
+        label {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid #374151;
+            background: #020617;
+            color: #e5e7eb;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.5);
+        }
+
+        button {
+            border-radius: 999px;
+            border: none;
+            padding: 7px 14px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #022c22;
+            font-weight: 600;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #e5e7eb;
+            border: 1px solid #374151;
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .flex-1 {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .players {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+
+        .player-pill {
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid #374151;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .player-pill.current {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.5);
+            background: #022c22;
+        }
+
+        .muted {
+            color: #9ca3af;
+            font-size: 0.8rem;
+        }
+
+        .question-box {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #020617;
+            border: 1px solid #1f2937;
+        }
+
+        .question-text {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .meta {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-btn {
+            font-size: 0.85rem;
+            padding: 8px 10px;
+            text-align: left;
+            border-radius: 999px;
+            border: 1px solid #374151;
+            background: #020617;
+            cursor: pointer;
+            color: #e5e7eb;
+        }
+
+        .option-btn.selected {
+            border-color: #22c55e;
+            background: #022c22;
+        }
+
+        .option-btn.correct {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.12);
+        }
+
+        .option-btn.incorrect {
+            border-color: #ef4444;
+            background: rgba(248, 113, 113, 0.12);
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            align-items: center;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .feedback {
+            font-size: 0.8rem;
+            min-height: 18px;
+        }
+
+        .feedback.correct {
+            color: #bbf7d0;
+        }
+
+        .feedback.incorrect {
+            color: #fecaca;
+        }
+
+        .feedback.info {
+            color: #9ca3af;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 0.8rem;
+        }
+
+        th,
+        td {
+            padding: 6px 4px;
+            text-align: left;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        th {
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        tr.highlight {
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="top-row">
+            <div>
+                <h1>Bible Trivia Expanded</h1>
+                <div class="subtitle">
+                    Multi-player Bible trivia using ESV references (no long verse text), with a larger question bank.
+                </div>
+            </div>
+            <div>
+                <span class="badge">ESV-based</span>
+                <span class="badge">Easy / Intermediate / Advanced / Mixed</span>
+            </div>
+        </div>
+
+        <div class="layout">
+            <!-- LEFT: Game -->
+            <div class="card">
+                <h2>Game Setup & Question</h2>
+                <small>Add players, pick difficulty (or Mixed), then play.</small>
+
+                <!-- Player setup -->
+                <div class="row">
+                    <div class="flex-1">
+                        <label for="playerName">New player name</label>
+                        <input id="playerName" type="text" placeholder="e.g. Chad" />
+                    </div>
+                    <button id="addPlayerBtn" class="btn-outline">+ Add Player</button>
+                </div>
+
+                <div class="players" id="playersContainer"></div>
+                <div class="muted">Click a name to set whose turn it is. Turns also rotate automatically.</div>
+
+                <!-- Difficulty + next question -->
+                <div class="row" style="margin-top: 12px;">
+                    <div class="flex-1">
+                        <label for="difficultySelect">Difficulty</label>
+                        <select id="difficultySelect">
+                            <option value="easy">Easy (1 point)</option>
+                            <option value="intermediate">Intermediate (2 points)</option>
+                            <option value="advanced">Advanced (3 points)</option>
+                            <option value="mixed">Mixed (random difficulty)</option>
+                        </select>
+                    </div>
+                    <button id="nextQuestionBtn" class="btn-primary">Next Question</button>
+                </div>
+
+                <!-- Question -->
+                <div class="question-box">
+                    <div class="muted" id="currentPlayerLabel">No players yet.</div>
+                    <div class="question-text" id="questionText">
+                        Click "Next Question" to start the game.
+                    </div>
+                    <div class="meta" id="questionMeta">Reference: — | Category: — | Difficulty: —</div>
+
+                    <div class="options" id="optionsContainer"></div>
+
+                    <div class="status-row">
+                        <div id="feedback" class="feedback info">No answer submitted yet.</div>
+                        <button id="submitAnswerBtn" class="btn-outline">Submit Answer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Scoreboard -->
+            <div class="card">
+                <h2>Scoreboard</h2>
+                <small>Correct answers by difficulty and total points.</small>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Easy</th>
+                            <th>Int.</th>
+                            <th>Adv.</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoreboardBody">
+                        <tr>
+                            <td colspan="5" class="muted">No players yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="muted" id="questionsCount">Questions answered: 0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Expanded question bank (ESV-based references only, not full text)
+        const questions = [
+            // ==== EASY ====
+            {
+                difficulty: "easy",
+                text: "Who built the ark to survive the flood?",
+                options: { A: "Abraham", B: "Noah", C: "Moses", D: "David" },
+                answer: "B",
+                reference: "Genesis 6–9",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who killed Goliath?",
+                options: { A: "David", B: "Saul", C: "Solomon", D: "Samuel" },
+                answer: "A",
+                reference: "1 Samuel 17",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who led Israel out of slavery in Egypt?",
+                options: { A: "Joshua", B: "Moses", C: "Aaron", D: "Joseph" },
+                answer: "B",
+                reference: "Exodus 3–14",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What sea did God part for Israel to escape Egypt?",
+                options: { A: "Red Sea", B: "Dead Sea", C: "Sea of Galilee", D: "Mediterranean Sea" },
+                answer: "A",
+                reference: "Exodus 14",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "On which mountain did God give the Ten Commandments to Moses?",
+                options: { A: "Mount Ararat", B: "Mount Carmel", C: "Mount Sinai", D: "Mount Zion" },
+                answer: "C",
+                reference: "Exodus 19–20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What is the first book of the Bible?",
+                options: { A: "Genesis", B: "Exodus", C: "Psalms", D: "Matthew" },
+                answer: "A",
+                reference: "Genesis 1:1",
+                category: "Bible Basics"
+            },
+            {
+                difficulty: "easy",
+                text: "What is the last book of the Bible?",
+                options: { A: "Jude", B: "Revelation", C: "Hebrews", D: "Acts" },
+                answer: "B",
+                reference: "Revelation 1:1",
+                category: "Bible Basics"
+            },
+            {
+                difficulty: "easy",
+                text: "In which town was Jesus born?",
+                options: { A: "Nazareth", B: "Jerusalem", C: "Bethlehem", D: "Capernaum" },
+                answer: "C",
+                reference: "Matthew 2:1",
+                category: "Gospels"
+            },
+            {
+                difficulty: "easy",
+                text: "Where did Jesus grow up?",
+                options: { A: "Bethlehem", B: "Nazareth", C: "Jerusalem", D: "Bethany" },
+                answer: "B",
+                reference: "Luke 2:39–40, 4:16",
+                category: "Gospels"
+            },
+            {
+                difficulty: "easy",
+                text: "Who is the mother of Jesus?",
+                options: { A: "Martha", B: "Elizabeth", C: "Mary", D: "Ruth" },
+                answer: "C",
+                reference: "Matthew 1:18",
+                category: "Gospels"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was Jesus' earthly father (his legal father)?",
+                options: { A: "Zechariah", B: "Joseph", C: "Simeon", D: "Nicodemus" },
+                answer: "B",
+                reference: "Matthew 1:19–25",
+                category: "Gospels"
+            },
+            {
+                difficulty: "easy",
+                text: "What did Jesus turn water into at the wedding in Cana?",
+                options: { A: "Milk", B: "Oil", C: "Wine", D: "Honey" },
+                answer: "C",
+                reference: "John 2:1–11",
+                category: "Gospels"
+            },
+            {
+                difficulty: "easy",
+                text: "How many disciples did Jesus choose?",
+                options: { A: "7", B: "10", C: "12", D: "70" },
+                answer: "C",
+                reference: "Luke 6:12–16",
+                category: "Gospels"
+            },
+            {
+                difficulty: "easy",
+                text: "Who walked on water toward Jesus before starting to sink?",
+                options: { A: "James", B: "John", C: "Peter", D: "Andrew" },
+                answer: "C",
+                reference: "Matthew 14:28–31",
+                category: "Gospels"
+            },
+            {
+                difficulty: "easy",
+                text: "Who denied Jesus three times before the rooster crowed?",
+                options: { A: "Peter", B: "John", C: "Thomas", D: "Judas" },
+                answer: "A",
+                reference: "Matthew 26:69–75",
+                category: "Gospels"
+            },
+            {
+                difficulty: "easy",
+                text: "Which disciple betrayed Jesus for thirty pieces of silver?",
+                options: { A: "Peter", B: "John", C: "Judas Iscariot", D: "Thomas" },
+                answer: "C",
+                reference: "Matthew 26:14–16",
+                category: "Gospels"
+            },
+            {
+                difficulty: "easy",
+                text: "On the third day after His crucifixion, what happened to Jesus?",
+                options: { A: "He stayed in the tomb", B: "He was taken to Rome", C: "He rose from the dead", D: "He disappeared from Israel" },
+                answer: "C",
+                reference: "Luke 24:1–7",
+                category: "Gospels"
+            },
+            {
+                difficulty: "easy",
+                text: "In the parable of the lost sheep, how many sheep did the shepherd leave to find the one?",
+                options: { A: "9", B: "10", C: "50", D: "99" },
+                answer: "D",
+                reference: "Luke 15:3–7",
+                category: "Parables"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was thrown into a lions’ den for praying to God?",
+                options: { A: "Joseph", B: "Daniel", C: "Nehemiah", D: "Ezra" },
+                answer: "B",
+                reference: "Daniel 6",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Which Old Testament figure was sold by his brothers and later became a ruler in Egypt?",
+                options: { A: "Joseph", B: "Benjamin", C: "Joshua", D: "Caleb" },
+                answer: "A",
+                reference: "Genesis 37–41",
+                category: "Old Testament"
+            },
+
+            // ==== INTERMEDIATE ====
+            {
+                difficulty: "intermediate",
+                text: "Which prophet was commanded to marry Gomer?",
+                options: { A: "Hosea", B: "Isaiah", C: "Jeremiah", D: "Ezekiel" },
+                answer: "A",
+                reference: "Hosea 1:2–3",
+                category: "Prophets"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Where was Saul going when he encountered the risen Jesus on the road?",
+                options: { A: "Jerusalem", B: "Damascus", C: "Antioch", D: "Rome" },
+                answer: "B",
+                reference: "Acts 9:1–3",
+                category: "Acts"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was chosen to replace Judas Iscariot as an apostle?",
+                options: { A: "Matthias", B: "Barnabas", C: "Silas", D: "Philip" },
+                answer: "A",
+                reference: "Acts 1:23–26",
+                category: "Acts"
+            },
+            {
+                difficulty: "intermediate",
+                text: "In which book do you find the story of Balaam’s donkey speaking?",
+                options: { A: "Exodus", B: "Numbers", C: "Deuteronomy", D: "Judges" },
+                answer: "B",
+                reference: "Numbers 22",
+                category: "Pentateuch"
+            },
+            {
+                difficulty: "intermediate",
+                text: "In the parable of the sower, where is the seed that is choked by cares and riches?",
+                options: { A: "Beside the path", B: "On the rock", C: "Among thorns", D: "Good soil" },
+                answer: "C",
+                reference: "Luke 8:7,14",
+                category: "Parables"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which judge defeated the Midianites with just 300 men?",
+                options: { A: "Gideon", B: "Samson", C: "Deborah", D: "Jephthah" },
+                answer: "A",
+                reference: "Judges 6–7",
+                category: "Judges"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which Old Testament prophet confronted King Ahab and the prophets of Baal on Mount Carmel?",
+                options: { A: "Elisha", B: "Jeremiah", C: "Ezekiel", D: "Elijah" },
+                answer: "D",
+                reference: "1 Kings 18",
+                category: "Prophets"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who interpreted King Nebuchadnezzar’s dreams in Babylon?",
+                options: { A: "Joseph", B: "Daniel", C: "Ezekiel", D: "Mordecai" },
+                answer: "B",
+                reference: "Daniel 2, 4",
+                category: "Prophets"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which Old Testament figure was put in a basket in the Nile as a baby?",
+                options: { A: "Samuel", B: "Moses", C: "David", D: "Isaac" },
+                answer: "B",
+                reference: "Exodus 2:1–10",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which Old Testament book tells the story of a Jewish woman who became queen of Persia?",
+                options: { A: "Ruth", B: "Esther", C: "Ezra", D: "Nehemiah" },
+                answer: "B",
+                reference: "Esther 1–10",
+                category: "Historical Books"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who is the father of John the Baptist?",
+                options: { A: "Joseph", B: "Zechariah", C: "Simeon", D: "Cornelius" },
+                answer: "B",
+                reference: "Luke 1:5–25",
+                category: "Gospels"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which Pharisee came to Jesus by night to ask questions about being born again?",
+                options: { A: "Gamaliel", B: "Nicodemus", C: "Caiaphas", D: "Annas" },
+                answer: "B",
+                reference: "John 3:1–10",
+                category: "Gospels"
+            },
+            {
+                difficulty: "intermediate",
+                text: "In which city were the disciples first called Christians?",
+                options: { A: "Jerusalem", B: "Antioch", C: "Corinth", D: "Rome" },
+                answer: "B",
+                reference: "Acts 11:26",
+                category: "Acts"
+            },
+            {
+                difficulty: "intermediate",
+                text: "On which island was Paul shipwrecked on his way to Rome?",
+                options: { A: "Cyprus", B: "Patmos", C: "Malta", D: "Crete" },
+                answer: "C",
+                reference: "Acts 27–28",
+                category: "Acts"
+            },
+            {
+                difficulty: "intermediate",
+                text: "What was Paul’s trade by which he made a living?",
+                options: { A: "Fisherman", B: "Shepherd", C: "Scribe", D: "Tentmaker" },
+                answer: "D",
+                reference: "Acts 18:3",
+                category: "Acts"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which Gospel writer was a tax collector before following Jesus?",
+                options: { A: "Mark", B: "John", C: "Matthew", D: "Luke" },
+                answer: "C",
+                reference: "Matthew 9:9",
+                category: "Gospels"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which New Testament letter teaches extensively about the armor of God?",
+                options: { A: "Galatians", B: "Ephesians", C: "Colossians", D: "Hebrews" },
+                answer: "B",
+                reference: "Ephesians 6:10–18",
+                category: "Epistles"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which letter contains the famous passage about love being patient and kind?",
+                options: { A: "Romans", B: "Hebrews", C: "1 Corinthians", D: "James" },
+                answer: "C",
+                reference: "1 Corinthians 13",
+                category: "Epistles"
+            },
+
+            // ==== ADVANCED ====
+            {
+                difficulty: "advanced",
+                text: "Who was the first king of the northern kingdom (Israel) after the kingdom split?",
+                options: { A: "Rehoboam", B: "Jeroboam", C: "Omri", D: "Jehu" },
+                answer: "B",
+                reference: "1 Kings 12:20",
+                category: "Historical Books"
+            },
+            {
+                difficulty: "advanced",
+                text: "In Revelation, the rider on the black horse is described as holding what?",
+                options: { A: "A sword", B: "A bow", C: "A pair of scales", D: "A scroll" },
+                answer: "C",
+                reference: "Revelation 6:5 (ESV)",
+                category: "Revelation"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which judge of Israel made a rash vow that affected his daughter?",
+                options: { A: "Gideon", B: "Jephthah", C: "Samson", D: "Ehud" },
+                answer: "B",
+                reference: "Judges 11:30–40",
+                category: "Judges"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which king of Judah ordered the repair of the temple and heard the Book of the Law read to him?",
+                options: { A: "Hezekiah", B: "Uzziah", C: "Josiah", D: "Jehoshaphat" },
+                answer: "C",
+                reference: "2 Kings 22",
+                category: "Historical Books"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which prophet saw a vision of a valley of dry bones being brought to life?",
+                options: { A: "Isaiah", B: "Jeremiah", C: "Ezekiel", D: "Daniel" },
+                answer: "C",
+                reference: "Ezekiel 37:1–14",
+                category: "Prophets"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which minor prophet describes a locust plague and speaks of God pouring out his Spirit on all flesh?",
+                options: { A: "Joel", B: "Amos", C: "Micah", D: "Habakkuk" },
+                answer: "A",
+                reference: "Joel 1–2",
+                category: "Minor Prophets"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which Old Testament book is a series of laments over the destruction of Jerusalem, traditionally attributed to Jeremiah?",
+                options: { A: "Ecclesiastes", B: "Lamentations", C: "Song of Solomon", D: "Nahum" },
+                answer: "B",
+                reference: "Lamentations 1:1",
+                category: "Poetry & Wisdom"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which prophet had a vision of the Lord seated on a throne in the year that King Uzziah died?",
+                options: { A: "Jeremiah", B: "Ezekiel", C: "Isaiah", D: "Zechariah" },
+                answer: "C",
+                reference: "Isaiah 6:1",
+                category: "Prophets"
+            },
+            {
+                difficulty: "advanced",
+                text: "According to the letter to the Hebrews, Jesus is a high priest after the order of which Old Testament figure?",
+                options: { A: "Aaron", B: "Levi", C: "Melchizedek", D: "Samuel" },
+                answer: "C",
+                reference: "Hebrews 5–7",
+                category: "Epistles"
+            },
+            {
+                difficulty: "advanced",
+                text: "In which psalm is the verse found where the LORD says to 'my Lord' to sit at his right hand, later quoted by Jesus in the Gospels?",
+                options: { A: "Psalm 2", B: "Psalm 23", C: "Psalm 51", D: "Psalm 110" },
+                answer: "D",
+                reference: "Psalm 110:1; Matthew 22:41–46",
+                category: "Psalms"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which prophet was thrown into a cistern (pit) and sank in the mud during Jerusalem’s final days?",
+                options: { A: "Ezekiel", B: "Jeremiah", C: "Isaiah", D: "Zephaniah" },
+                answer: "B",
+                reference: "Jeremiah 38:6",
+                category: "Prophets"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which minor prophet confronted Nineveh with a message of coming judgment and is associated with a great fish?",
+                options: { A: "Jonah", B: "Nahum", C: "Micah", D: "Habakkuk" },
+                answer: "A",
+                reference: "Jonah 1–4",
+                category: "Minor Prophets"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which New Testament letter warns strongly that faith without works is dead?",
+                options: { A: "Galatians", B: "Ephesians", C: "James", D: "1 John" },
+                answer: "C",
+                reference: "James 2:14–26",
+                category: "Epistles"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which New Testament letter focuses on Christ as the image of the invisible God and the head of the body, the church?",
+                options: { A: "Romans", B: "Colossians", C: "1 Peter", D: "Jude" },
+                answer: "B",
+                reference: "Colossians 1:15–20",
+                category: "Epistles"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which Old Testament book presents a dialogue between a prophet and God about why God uses a more wicked nation to judge His people?",
+                options: { A: "Nahum", B: "Habakkuk", C: "Haggai", D: "Zechariah" },
+                answer: "B",
+                reference: "Habakkuk 1–2",
+                category: "Minor Prophets"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which Old Testament figure is described as 'a priest of God Most High' and king of Salem, who blessed Abraham?",
+                options: { A: "Melchizedek", B: "Aaron", C: "Eli", D: "Phinehas" },
+                answer: "A",
+                reference: "Genesis 14:18–20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "In which book do we read of the prophet seeing a vision of a lampstand and two olive trees, later alluded to in Revelation?",
+                options: { A: "Zephaniah", B: "Zechariah", C: "Malachi", D: "Haggai" },
+                answer: "B",
+                reference: "Zechariah 4; Revelation 11:3–4",
+                category: "Prophets"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which apostle wrote both a Gospel and the book of Revelation?",
+                options: { A: "Peter", B: "John", C: "James", D: "Andrew" },
+                answer: "B",
+                reference: "John 1:1; Revelation 1:1,9",
+                category: "New Testament"
+            },
+            // ==== NEW BATCH 1 ====
+            // EASY
+            {
+                difficulty: "easy",
+                text: "Who was the first man created by God?",
+                options: { A: "Adam", B: "Cain", C: "Abel", D: "Moses" },
+                answer: "A",
+                reference: "Genesis 1:27, 2:7",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the first woman created by God?",
+                options: { A: "Eve", B: "Sarah", C: "Rebekah", D: "Mary" },
+                answer: "A",
+                reference: "Genesis 2:22",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What did God create on the first day?",
+                options: { A: "Light", B: "Animals", C: "Plants", D: "Stars" },
+                answer: "A",
+                reference: "Genesis 1:3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who built the ark?",
+                options: { A: "Noah", B: "Moses", C: "David", D: "Solomon" },
+                answer: "A",
+                reference: "Genesis 6:14",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "How many days did it rain during the flood?",
+                options: { A: "40 days and 40 nights", B: "7 days", C: "100 days", D: "3 days" },
+                answer: "A",
+                reference: "Genesis 7:12",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What was the sign of God's covenant with Noah?",
+                options: { A: "Rainbow", B: "Dove", C: "Olive branch", D: "Fire" },
+                answer: "A",
+                reference: "Genesis 9:13",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was known as the father of many nations?",
+                options: { A: "Abraham", B: "Isaac", C: "Jacob", D: "Joseph" },
+                answer: "A",
+                reference: "Genesis 17:5",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was Abraham's wife?",
+                options: { A: "Sarah", B: "Hagar", C: "Keturah", D: "Leah" },
+                answer: "A",
+                reference: "Genesis 11:29",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the son of Abraham and Sarah?",
+                options: { A: "Isaac", B: "Ishmael", C: "Esau", D: "Jacob" },
+                answer: "A",
+                reference: "Genesis 21:3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was sold into slavery by his brothers?",
+                options: { A: "Joseph", B: "Benjamin", C: "Judah", D: "Reuben" },
+                answer: "A",
+                reference: "Genesis 37:28",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who received the coat of many colors?",
+                options: { A: "Joseph", B: "Jacob", C: "David", D: "Solomon" },
+                answer: "A",
+                reference: "Genesis 37:3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the baby found in a basket in the Nile River?",
+                options: { A: "Moses", B: "Aaron", C: "Miriam", D: "Joshua" },
+                answer: "A",
+                reference: "Exodus 2:3-10",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who spoke to Moses from the burning bush?",
+                options: { A: "God", B: "An angel", C: "A prophet", D: "A priest" },
+                answer: "A",
+                reference: "Exodus 3:4",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "How many plagues did God send on Egypt?",
+                options: { A: "10", B: "7", C: "12", D: "3" },
+                answer: "A",
+                reference: "Exodus 7-12",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What food did God provide for the Israelites in the desert?",
+                options: { A: "Manna", B: "Bread", C: "Fish", D: "Fruit" },
+                answer: "A",
+                reference: "Exodus 16:15",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who led the Israelites into the Promised Land?",
+                options: { A: "Joshua", B: "Moses", C: "Caleb", D: "Aaron" },
+                answer: "A",
+                reference: "Joshua 1:1-2",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "The walls of which city fell down after the Israelites marched around them?",
+                options: { A: "Jericho", B: "Jerusalem", C: "Ai", D: "Bethel" },
+                answer: "A",
+                reference: "Joshua 6:20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the strongest man in the Bible?",
+                options: { A: "Samson", B: "Goliath", C: "David", D: "Saul" },
+                answer: "A",
+                reference: "Judges 13-16",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the first king of Israel?",
+                options: { A: "Saul", B: "David", C: "Solomon", D: "Samuel" },
+                answer: "A",
+                reference: "1 Samuel 10:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the shepherd boy who became king?",
+                options: { A: "David", B: "Saul", C: "Jonathan", D: "Absalom" },
+                answer: "A",
+                reference: "1 Samuel 16:11-13",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the wisest king?",
+                options: { A: "Solomon", B: "David", C: "Saul", D: "Hezekiah" },
+                answer: "A",
+                reference: "1 Kings 3:12",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was swallowed by a great fish?",
+                options: { A: "Jonah", B: "Noah", C: "Moses", D: "Peter" },
+                answer: "A",
+                reference: "Jonah 1:17",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was thrown into the fiery furnace?",
+                options: { A: "Shadrach, Meshach, and Abednego", B: "Daniel", C: "Jeremiah", D: "Ezekiel" },
+                answer: "A",
+                reference: "Daniel 3:20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who baptized Jesus?",
+                options: { A: "John the Baptist", B: "Peter", C: "James", D: "Paul" },
+                answer: "A",
+                reference: "Matthew 3:13-17",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Where was Jesus baptized?",
+                options: { A: "Jordan River", B: "Sea of Galilee", C: "Dead Sea", D: "Nile River" },
+                answer: "A",
+                reference: "Matthew 3:13",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who tempted Jesus in the wilderness?",
+                options: { A: "The Devil", B: "Pharisees", C: "Sadducees", D: "Romans" },
+                answer: "A",
+                reference: "Matthew 4:1",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What is the first miracle Jesus performed?",
+                options: { A: "Turning water into wine", B: "Healing the blind", C: "Walking on water", D: "Feeding the 5000" },
+                answer: "A",
+                reference: "John 2:11",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who climbed a tree to see Jesus?",
+                options: { A: "Zacchaeus", B: "Matthew", C: "Bartimaeus", D: "Lazarus" },
+                answer: "A",
+                reference: "Luke 19:4",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who did Jesus raise from the dead?",
+                options: { A: "Lazarus", B: "John", C: "Peter", D: "James" },
+                answer: "A",
+                reference: "John 11:43-44",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who washed Jesus' feet with her tears?",
+                options: { A: "A sinful woman", B: "Mary Magdalene", C: "Martha", D: "Salome" },
+                answer: "A",
+                reference: "Luke 7:38",
+                category: "New Testament"
+            },
+
+            // INTERMEDIATE
+            {
+                difficulty: "intermediate",
+                text: "Who was the wife of Isaac?",
+                options: { A: "Rebekah", B: "Rachel", C: "Leah", D: "Sarah" },
+                answer: "A",
+                reference: "Genesis 24:67",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who stole her father's household gods?",
+                options: { A: "Rachel", B: "Leah", C: "Rebekah", D: "Dinah" },
+                answer: "A",
+                reference: "Genesis 31:19",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the oldest man in the Bible?",
+                options: { A: "Methuselah", B: "Noah", C: "Adam", D: "Enoch" },
+                answer: "A",
+                reference: "Genesis 5:27",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the first high priest of Israel?",
+                options: { A: "Aaron", B: "Moses", C: "Eleazar", D: "Phinehas" },
+                answer: "A",
+                reference: "Exodus 28:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who hid the spies in Jericho?",
+                options: { A: "Rahab", B: "Ruth", C: "Esther", D: "Deborah" },
+                answer: "A",
+                reference: "Joshua 2:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the left-handed judge?",
+                options: { A: "Ehud", B: "Gideon", C: "Samson", D: "Jephthah" },
+                answer: "A",
+                reference: "Judges 3:15",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the only female judge of Israel?",
+                options: { A: "Deborah", B: "Jael", C: "Ruth", D: "Naomi" },
+                answer: "A",
+                reference: "Judges 4:4",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who killed Sisera with a tent peg?",
+                options: { A: "Jael", B: "Deborah", C: "Rahab", D: "Delilah" },
+                answer: "A",
+                reference: "Judges 4:21",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was Ruth's mother-in-law?",
+                options: { A: "Naomi", B: "Orpah", C: "Mara", D: "Hannah" },
+                answer: "A",
+                reference: "Ruth 1:22",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the great-grandmother of King David?",
+                options: { A: "Ruth", B: "Rahab", C: "Bathsheba", D: "Tamar" },
+                answer: "A",
+                reference: "Ruth 4:17",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who anointed Saul as king?",
+                options: { A: "Samuel", B: "Eli", C: "Nathan", D: "Gad" },
+                answer: "A",
+                reference: "1 Samuel 10:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was David's best friend?",
+                options: { A: "Jonathan", B: "Joab", C: "Abner", D: "Absalom" },
+                answer: "A",
+                reference: "1 Samuel 18:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who rebuked David for his sin with Bathsheba?",
+                options: { A: "Nathan", B: "Samuel", C: "Elijah", D: "Elisha" },
+                answer: "A",
+                reference: "2 Samuel 12:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who built the first temple in Jerusalem?",
+                options: { A: "Solomon", B: "David", C: "Hezekiah", D: "Josiah" },
+                answer: "A",
+                reference: "1 Kings 6:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the wicked queen who tried to kill Elijah?",
+                options: { A: "Jezebel", B: "Athaliah", C: "Herodias", D: "Vashti" },
+                answer: "A",
+                reference: "1 Kings 19:2",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was taken up to heaven in a whirlwind?",
+                options: { A: "Elijah", B: "Elisha", C: "Enoch", D: "Moses" },
+                answer: "A",
+                reference: "2 Kings 2:11",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the cupbearer to the king of Persia?",
+                options: { A: "Nehemiah", B: "Ezra", C: "Daniel", D: "Mordecai" },
+                answer: "A",
+                reference: "Nehemiah 1:11",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the cousin of Esther?",
+                options: { A: "Mordecai", B: "Haman", C: "Xerxes", D: "Cyrus" },
+                answer: "A",
+                reference: "Esther 2:7",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who wrote the majority of the Psalms?",
+                options: { A: "David", B: "Solomon", C: "Asaph", D: "Moses" },
+                answer: "A",
+                reference: "Psalms",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who wrote the book of Proverbs?",
+                options: { A: "Solomon", B: "David", C: "Lemuel", D: "Agur" },
+                answer: "A",
+                reference: "Proverbs 1:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the weeping prophet?",
+                options: { A: "Jeremiah", B: "Isaiah", C: "Ezekiel", D: "Daniel" },
+                answer: "A",
+                reference: "Jeremiah 9:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who saw the writing on the wall?",
+                options: { A: "Belshazzar", B: "Nebuchadnezzar", C: "Darius", D: "Cyrus" },
+                answer: "A",
+                reference: "Daniel 5:5",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the forerunner of Jesus?",
+                options: { A: "John the Baptist", B: "Elijah", C: "Isaiah", D: "Malachi" },
+                answer: "A",
+                reference: "Mark 1:2-4",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who told Mary she would have a son?",
+                options: { A: "Gabriel", B: "Michael", C: "Raphael", D: "Uriel" },
+                answer: "A",
+                reference: "Luke 1:26-31",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who were the first disciples called by Jesus?",
+                options: { A: "Simon and Andrew", B: "James and John", C: "Philip and Nathanael", D: "Matthew and Thomas" },
+                answer: "A",
+                reference: "Mark 1:16-18",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the tax collector among the disciples?",
+                options: { A: "Matthew", B: "Zacchaeus", C: "Levi", D: "Judas" },
+                answer: "A",
+                reference: "Matthew 9:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who doubted Jesus' resurrection?",
+                options: { A: "Thomas", B: "Peter", C: "John", D: "Philip" },
+                answer: "A",
+                reference: "John 20:24-25",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the first martyr?",
+                options: { A: "Stephen", B: "James", C: "Peter", D: "Paul" },
+                answer: "A",
+                reference: "Acts 7:59-60",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the magician who tried to buy the Holy Spirit's power?",
+                options: { A: "Simon", B: "Elymas", C: "Bar-Jesus", D: "Demetrius" },
+                answer: "A",
+                reference: "Acts 8:18-19",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the seller of purple cloth?",
+                options: { A: "Lydia", B: "Priscilla", C: "Phoebe", D: "Dorcas" },
+                answer: "A",
+                reference: "Acts 16:14",
+                category: "New Testament"
+            },
+
+            // ADVANCED
+            {
+                difficulty: "advanced",
+                text: "Who was the father of Methuselah?",
+                options: { A: "Enoch", B: "Lamech", C: "Jared", D: "Mahalalel" },
+                answer: "A",
+                reference: "Genesis 5:21",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the king of Salem and priest of God Most High?",
+                options: { A: "Melchizedek", B: "Abimelech", C: "Bera", D: "Birsha" },
+                answer: "A",
+                reference: "Genesis 14:18",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the mother of Ishmael?",
+                options: { A: "Hagar", B: "Sarah", C: "Keturah", D: "Zilpah" },
+                answer: "A",
+                reference: "Genesis 16:15",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the wife of Moses?",
+                options: { A: "Zipporah", B: "Miriam", C: "Jochebed", D: "Elisheba" },
+                answer: "A",
+                reference: "Exodus 2:21",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who were the sons of Aaron who offered unauthorized fire?",
+                options: { A: "Nadab and Abihu", B: "Eleazar and Ithamar", C: "Hophni and Phinehas", D: "Joel and Abijah" },
+                answer: "A",
+                reference: "Leviticus 10:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the king of Moab who hired Balaam?",
+                options: { A: "Balak", B: "Sihon", C: "Og", D: "Eglon" },
+                answer: "A",
+                reference: "Numbers 22:4",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who stole items from Jericho and caused Israel's defeat at Ai?",
+                options: { A: "Achan", B: "Carmi", C: "Zabdi", D: "Zerah" },
+                answer: "A",
+                reference: "Joshua 7:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who killed Eglon, the fat king of Moab?",
+                options: { A: "Ehud", B: "Othniel", C: "Shamgar", D: "Barak" },
+                answer: "A",
+                reference: "Judges 3:21",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the father of Samuel?",
+                options: { A: "Elkanah", B: "Eli", C: "Hophni", D: "Phinehas" },
+                answer: "A",
+                reference: "1 Samuel 1:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the king of the Amalekites spared by Saul?",
+                options: { A: "Agag", B: "Doeg", C: "Goliath", D: "Achish" },
+                answer: "A",
+                reference: "1 Samuel 15:8",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the commander of Saul's army?",
+                options: { A: "Abner", B: "Joab", C: "Abishai", D: "Asahel" },
+                answer: "A",
+                reference: "1 Samuel 14:50",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who touched the ark of the covenant and died?",
+                options: { A: "Uzzah", B: "Ahio", C: "Obed-Edom", D: "Michal" },
+                answer: "A",
+                reference: "2 Samuel 6:6-7",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who cursed David as he fled from Absalom?",
+                options: { A: "Shimei", B: "Ziba", C: "Mephibosheth", D: "Barzillai" },
+                answer: "A",
+                reference: "2 Samuel 16:5",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the prophet who tore his cloak into 12 pieces?",
+                options: { A: "Ahijah", B: "Shemaiah", C: "Iddo", D: "Jehu" },
+                answer: "A",
+                reference: "1 Kings 11:30",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the king of Judah struck with leprosy?",
+                options: { A: "Uzziah", B: "Jotham", C: "Ahaz", D: "Hezekiah" },
+                answer: "A",
+                reference: "2 Chronicles 26:19",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the governor of Judea who rebuilt the walls of Jerusalem?",
+                options: { A: "Nehemiah", B: "Ezra", C: "Zerubbabel", D: "Joshua" },
+                answer: "A",
+                reference: "Nehemiah 2:17",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the high priest who rebuilt the temple with Zerubbabel?",
+                options: { A: "Joshua", B: "Ezra", C: "Nehemiah", D: "Haggai" },
+                answer: "A",
+                reference: "Haggai 1:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the prophet who married a prostitute named Gomer?",
+                options: { A: "Hosea", B: "Joel", C: "Amos", D: "Obadiah" },
+                answer: "A",
+                reference: "Hosea 1:2-3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the prophet who ran from God and was swallowed by a fish?",
+                options: { A: "Jonah", B: "Nahum", C: "Micah", D: "Habakkuk" },
+                answer: "A",
+                reference: "Jonah 1:17",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the prophet who questioned God's justice?",
+                options: { A: "Habakkuk", B: "Zephaniah", C: "Haggai", D: "Malachi" },
+                answer: "A",
+                reference: "Habakkuk 1:2-4",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the high priest when Jesus was arrested?",
+                options: { A: "Caiaphas", B: "Annas", C: "Pilate", D: "Herod" },
+                answer: "A",
+                reference: "Matthew 26:3",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the member of the Sanhedrin who buried Jesus?",
+                options: { A: "Joseph of Arimathea", B: "Nicodemus", C: "Gamaliel", D: "Simon of Cyrene" },
+                answer: "A",
+                reference: "Mark 15:43",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the young man who fell out of a window while Paul was preaching?",
+                options: { A: "Eutychus", B: "Timothy", C: "Titus", D: "Silas" },
+                answer: "A",
+                reference: "Acts 20:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the silversmith who caused a riot in Ephesus?",
+                options: { A: "Demetrius", B: "Alexander", C: "Gaius", D: "Aristarchus" },
+                answer: "A",
+                reference: "Acts 19:24",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the Roman governor who kept Paul in prison for two years?",
+                options: { A: "Felix", B: "Festus", C: "Agrippa", D: "Gallio" },
+                answer: "A",
+                reference: "Acts 24:27",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the runaway slave mentioned in the book of Philemon?",
+                options: { A: "Onesimus", B: "Tychicus", C: "Epaphroditus", D: "Archippus" },
+                answer: "A",
+                reference: "Philemon 1:10",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the co-worker of Paul who fell ill and almost died?",
+                options: { A: "Epaphroditus", B: "Timothy", C: "Titus", D: "Luke" },
+                answer: "A",
+                reference: "Philippians 2:27",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the archangel who disputed with the devil about the body of Moses?",
+                options: { A: "Michael", B: "Gabriel", C: "Raphael", D: "Uriel" },
+                answer: "A",
+                reference: "Jude 1:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the woman who prophesied in the temple when Jesus was presented?",
+                options: { A: "Anna", B: "Elizabeth", C: "Mary", D: "Salome" },
+                answer: "A",
+                reference: "Luke 2:36",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the man who helped Jesus carry his cross?",
+                options: { A: "Simon of Cyrene", B: "Joseph of Arimathea", C: "Nicodemus", D: "Barabbas" },
+                answer: "A",
+                reference: "Mark 15:21",
+                category: "New Testament"
+            },
+            // ==== NEW BATCH 2 ====
+            // EASY
+            {
+                difficulty: "easy",
+                text: "Who was the mother of Samuel?",
+                options: { A: "Hannah", B: "Peninnah", C: "Sarah", D: "Rachel" },
+                answer: "A",
+                reference: "1 Samuel 1:20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the giant killed by David?",
+                options: { A: "Goliath", B: "Og", C: "Sihon", D: "Anak" },
+                answer: "A",
+                reference: "1 Samuel 17:50",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the king who wanted to kill baby Jesus?",
+                options: { A: "Herod", B: "Pilate", C: "Caesar", D: "Agrippa" },
+                answer: "A",
+                reference: "Matthew 2:13",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the mother of John the Baptist?",
+                options: { A: "Elizabeth", B: "Mary", C: "Anna", D: "Martha" },
+                answer: "A",
+                reference: "Luke 1:57",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the tax collector who climbed a tree?",
+                options: { A: "Zacchaeus", B: "Matthew", C: "Levi", D: "Simon" },
+                answer: "A",
+                reference: "Luke 19:2",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the first disciple to walk on water?",
+                options: { A: "Peter", B: "James", C: "John", D: "Andrew" },
+                answer: "A",
+                reference: "Matthew 14:29",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who betrayed Jesus with a kiss?",
+                options: { A: "Judas", B: "Peter", C: "Thomas", D: "Pilate" },
+                answer: "A",
+                reference: "Luke 22:48",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who denied Jesus three times?",
+                options: { A: "Peter", B: "Judas", C: "Thomas", D: "John" },
+                answer: "A",
+                reference: "Luke 22:61",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the Roman governor who sentenced Jesus to death?",
+                options: { A: "Pilate", B: "Herod", C: "Felix", D: "Festus" },
+                answer: "A",
+                reference: "Matthew 27:26",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the first person to see the risen Jesus?",
+                options: { A: "Mary Magdalene", B: "Peter", C: "John", D: "Mary mother of Jesus" },
+                answer: "A",
+                reference: "Mark 16:9",
+                category: "New Testament"
+            },
+
+            // INTERMEDIATE
+            {
+                difficulty: "intermediate",
+                text: "Who was the father of King David?",
+                options: { A: "Jesse", B: "Obed", C: "Boaz", D: "Saul" },
+                answer: "A",
+                reference: "1 Samuel 16:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the prophet who anointed David?",
+                options: { A: "Samuel", B: "Nathan", C: "Gad", D: "Ahijah" },
+                answer: "A",
+                reference: "1 Samuel 16:13",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the king who asked for wisdom?",
+                options: { A: "Solomon", B: "David", C: "Saul", D: "Rehoboam" },
+                answer: "A",
+                reference: "1 Kings 3:9",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the queen of Sheba who visited Solomon?",
+                options: { A: "Queen of Sheba", B: "Queen of Ethiopia", C: "Queen of Egypt", D: "Queen of Tyre" },
+                answer: "A",
+                reference: "1 Kings 10:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the prophet who challenged the prophets of Baal?",
+                options: { A: "Elijah", B: "Elisha", C: "Isaiah", D: "Jeremiah" },
+                answer: "A",
+                reference: "1 Kings 18:21",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the prophet who healed Naaman of leprosy?",
+                options: { A: "Elisha", B: "Elijah", C: "Gehazi", D: "Amos" },
+                answer: "A",
+                reference: "2 Kings 5:10",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the king who found the Book of the Law?",
+                options: { A: "Josiah", B: "Hezekiah", C: "Manasseh", D: "Amon" },
+                answer: "A",
+                reference: "2 Kings 22:8",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the prophet who wrote Lamentations?",
+                options: { A: "Jeremiah", B: "Isaiah", C: "Ezekiel", D: "Daniel" },
+                answer: "A",
+                reference: "Lamentations",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the king who threw Daniel in the lions' den?",
+                options: { A: "Darius", B: "Nebuchadnezzar", C: "Cyrus", D: "Belshazzar" },
+                answer: "A",
+                reference: "Daniel 6:16",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the queen who saved the Jews from Haman?",
+                options: { A: "Esther", B: "Vashti", C: "Ruth", D: "Naomi" },
+                answer: "A",
+                reference: "Esther 7:3",
+                category: "Old Testament"
+            },
+
+            // ADVANCED
+            {
+                difficulty: "advanced",
+                text: "Who was the father of Joshua?",
+                options: { A: "Nun", B: "Caleb", C: "Jephunneh", D: "Eleazar" },
+                answer: "A",
+                reference: "Joshua 1:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the judge who made a golden ephod?",
+                options: { A: "Gideon", B: "Samson", C: "Jephthah", D: "Barak" },
+                answer: "A",
+                reference: "Judges 8:27",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the priest who died when he heard the ark was captured?",
+                options: { A: "Eli", B: "Phinehas", C: "Hophni", D: "Ichabod" },
+                answer: "A",
+                reference: "1 Samuel 4:18",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the king of Israel who built Samaria?",
+                options: { A: "Omri", B: "Ahab", C: "Jeroboam", D: "Baasha" },
+                answer: "A",
+                reference: "1 Kings 16:24",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the prophet who predicted the virgin birth?",
+                options: { A: "Isaiah", B: "Jeremiah", C: "Micah", D: "Zechariah" },
+                answer: "A",
+                reference: "Isaiah 7:14",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the prophet who spoke of the suffering servant?",
+                options: { A: "Isaiah", B: "Jeremiah", C: "Ezekiel", D: "Daniel" },
+                answer: "A",
+                reference: "Isaiah 53",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the prophet who saw the glory of God leave the temple?",
+                options: { A: "Ezekiel", B: "Jeremiah", C: "Isaiah", D: "Daniel" },
+                answer: "A",
+                reference: "Ezekiel 10:18",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the prophet who spoke of the valley of decision?",
+                options: { A: "Joel", B: "Amos", C: "Obadiah", D: "Jonah" },
+                answer: "A",
+                reference: "Joel 3:14",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the prophet who said 'The just shall live by his faith'?",
+                options: { A: "Habakkuk", B: "Zephaniah", C: "Haggai", D: "Malachi" },
+                answer: "A",
+                reference: "Habakkuk 2:4",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the prophet who encouraged the rebuilding of the temple?",
+                options: { A: "Haggai", B: "Malachi", C: "Zephaniah", D: "Nahum" },
+                answer: "A",
+                reference: "Haggai 1:8",
+                category: "Old Testament"
+            },
+            // ==== NEW BATCH 1 (Easy) ====
+            {
+                difficulty: "easy",
+                text: "Who was the first man created by God?",
+                options: { A: "Adam", B: "Cain", C: "Abel", D: "Moses" },
+                answer: "A",
+                reference: "Genesis 1:27",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the first woman?",
+                options: { A: "Eve", B: "Sarah", C: "Mary", D: "Ruth" },
+                answer: "A",
+                reference: "Genesis 2:22",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What did God create on the first day?",
+                options: { A: "Light", B: "Animals", C: "Plants", D: "Sun" },
+                answer: "A",
+                reference: "Genesis 1:3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who built the ark?",
+                options: { A: "Noah", B: "Moses", C: "David", D: "Solomon" },
+                answer: "A",
+                reference: "Genesis 6:14",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "How many days did it rain during the flood?",
+                options: { A: "40", B: "7", C: "12", D: "3" },
+                answer: "A",
+                reference: "Genesis 7:12",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What sign did God give Noah after the flood?",
+                options: { A: "Rainbow", B: "Dove", C: "Olive branch", D: "Star" },
+                answer: "A",
+                reference: "Genesis 9:13",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the father of many nations?",
+                options: { A: "Abraham", B: "Isaac", C: "Jacob", D: "Joseph" },
+                answer: "A",
+                reference: "Genesis 17:5",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was Abraham's wife?",
+                options: { A: "Sarah", B: "Rebekah", C: "Leah", D: "Rachel" },
+                answer: "A",
+                reference: "Genesis 17:15",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the son of Abraham and Sarah?",
+                options: { A: "Isaac", B: "Ishmael", C: "Esau", D: "Jacob" },
+                answer: "A",
+                reference: "Genesis 21:3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who had a coat of many colors?",
+                options: { A: "Joseph", B: "Benjamin", C: "Judah", D: "Reuben" },
+                answer: "A",
+                reference: "Genesis 37:3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was found in a basket in the Nile?",
+                options: { A: "Moses", B: "Aaron", C: "Miriam", D: "Joshua" },
+                answer: "A",
+                reference: "Exodus 2:3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "How many plagues were sent on Egypt?",
+                options: { A: "10", B: "7", C: "12", D: "3" },
+                answer: "A",
+                reference: "Exodus 7-12",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What sea did the Israelites cross?",
+                options: { A: "Red Sea", B: "Dead Sea", C: "Sea of Galilee", D: "Mediterranean" },
+                answer: "A",
+                reference: "Exodus 14:21",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What food fell from heaven in the desert?",
+                options: { A: "Manna", B: "Bread", C: "Quail", D: "Figs" },
+                answer: "A",
+                reference: "Exodus 16:15",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Where were the Ten Commandments given?",
+                options: { A: "Mt. Sinai", B: "Mt. Zion", C: "Mt. Carmel", D: "Mt. Nebo" },
+                answer: "A",
+                reference: "Exodus 19:20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who led Israel after Moses died?",
+                options: { A: "Joshua", B: "Caleb", C: "Aaron", D: "Gideon" },
+                answer: "A",
+                reference: "Joshua 1:1-2",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Which city's walls fell down?",
+                options: { A: "Jericho", B: "Ai", C: "Jerusalem", D: "Bethel" },
+                answer: "A",
+                reference: "Joshua 6:20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the strongest man?",
+                options: { A: "Samson", B: "Goliath", C: "David", D: "Saul" },
+                answer: "A",
+                reference: "Judges 14-16",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the first king of Israel?",
+                options: { A: "Saul", B: "David", C: "Solomon", D: "Samuel" },
+                answer: "A",
+                reference: "1 Samuel 10:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who killed Goliath?",
+                options: { A: "David", B: "Saul", C: "Jonathan", D: "Absalom" },
+                answer: "A",
+                reference: "1 Samuel 17:50",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the wisest king?",
+                options: { A: "Solomon", B: "David", C: "Hezekiah", D: "Josiah" },
+                answer: "A",
+                reference: "1 Kings 3:12",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was swallowed by a great fish?",
+                options: { A: "Jonah", B: "Noah", C: "Moses", D: "Peter" },
+                answer: "A",
+                reference: "Jonah 1:17",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was thrown into the lions' den?",
+                options: { A: "Daniel", B: "Shadrach", C: "Meshach", D: "Abednego" },
+                answer: "A",
+                reference: "Daniel 6:16",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who were the three men in the fiery furnace?",
+                options: { A: "Shadrach, Meshach, Abednego", B: "Peter, James, John", C: "Shem, Ham, Japheth", D: "Saul, David, Solomon" },
+                answer: "A",
+                reference: "Daniel 3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who is the mother of Jesus?",
+                options: { A: "Mary", B: "Elizabeth", C: "Martha", D: "Anna" },
+                answer: "A",
+                reference: "Luke 1:30-31",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Where was Jesus born?",
+                options: { A: "Bethlehem", B: "Nazareth", C: "Jerusalem", D: "Capernaum" },
+                answer: "A",
+                reference: "Luke 2:4",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was Jesus' earthly father?",
+                options: { A: "Joseph", B: "Zechariah", C: "John", D: "Simeon" },
+                answer: "A",
+                reference: "Matthew 1:16",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who baptized Jesus?",
+                options: { A: "John the Baptist", B: "Peter", C: "James", D: "Paul" },
+                answer: "A",
+                reference: "Matthew 3:13",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Where was Jesus baptized?",
+                options: { A: "Jordan River", B: "Sea of Galilee", C: "Dead Sea", D: "Nile" },
+                answer: "A",
+                reference: "Mark 1:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "How many disciples did Jesus have?",
+                options: { A: "12", B: "10", C: "7", D: "3" },
+                answer: "A",
+                reference: "Matthew 10:1",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who walked on water?",
+                options: { A: "Peter", B: "John", C: "James", D: "Thomas" },
+                answer: "A",
+                reference: "Matthew 14:29",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who betrayed Jesus?",
+                options: { A: "Judas", B: "Peter", C: "Pilate", D: "Herod" },
+                answer: "A",
+                reference: "Matthew 26:14",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who denied Jesus three times?",
+                options: { A: "Peter", B: "Judas", C: "Thomas", D: "John" },
+                answer: "A",
+                reference: "Matthew 26:75",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the Roman governor who sentenced Jesus?",
+                options: { A: "Pilate", B: "Herod", C: "Caesar", D: "Felix" },
+                answer: "A",
+                reference: "Matthew 27:2",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "On which day did Jesus rise from the dead?",
+                options: { A: "Third day", B: "Seventh day", C: "First day", D: "Fortieth day" },
+                answer: "A",
+                reference: "1 Corinthians 15:4",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the first to see the risen Jesus?",
+                options: { A: "Mary Magdalene", B: "Peter", C: "John", D: "Thomas" },
+                answer: "A",
+                reference: "Mark 16:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who doubted Jesus' resurrection?",
+                options: { A: "Thomas", B: "Peter", C: "James", D: "Philip" },
+                answer: "A",
+                reference: "John 20:25",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the first martyr?",
+                options: { A: "Stephen", B: "James", C: "Peter", D: "Paul" },
+                answer: "A",
+                reference: "Acts 7:59",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was blinded on the road to Damascus?",
+                options: { A: "Saul (Paul)", B: "Peter", C: "Barnabas", D: "Silas" },
+                answer: "A",
+                reference: "Acts 9:3-8",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who wrote the most books in the New Testament?",
+                options: { A: "Paul", B: "Peter", C: "John", D: "Luke" },
+                answer: "A",
+                reference: "New Testament",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What is the last book of the Bible?",
+                options: { A: "Revelation", B: "Genesis", C: "Malachi", D: "Jude" },
+                answer: "A",
+                reference: "Revelation",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What is the first book of the New Testament?",
+                options: { A: "Matthew", B: "Mark", C: "Luke", D: "John" },
+                answer: "A",
+                reference: "Matthew",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the giant that David killed?",
+                options: { A: "Goliath", B: "Og", C: "Sihon", D: "Anak" },
+                answer: "A",
+                reference: "1 Samuel 17",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the brother of Moses?",
+                options: { A: "Aaron", B: "Joshua", C: "Caleb", D: "Hur" },
+                answer: "A",
+                reference: "Exodus 4:14",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the sister of Moses?",
+                options: { A: "Miriam", B: "Deborah", C: "Ruth", D: "Esther" },
+                answer: "A",
+                reference: "Exodus 15:20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the wife of Isaac?",
+                options: { A: "Rebekah", B: "Rachel", C: "Leah", D: "Sarah" },
+                answer: "A",
+                reference: "Genesis 24:67",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who sold his birthright for a bowl of stew?",
+                options: { A: "Esau", B: "Jacob", C: "Joseph", D: "Benjamin" },
+                answer: "A",
+                reference: "Genesis 25:33",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who wrestled with God?",
+                options: { A: "Jacob", B: "Abraham", C: "Isaac", D: "Moses" },
+                answer: "A",
+                reference: "Genesis 32:28",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the dreamer?",
+                options: { A: "Joseph", B: "Daniel", C: "David", D: "Samuel" },
+                answer: "A",
+                reference: "Genesis 37:19",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who led the people around Jericho?",
+                options: { A: "Joshua", B: "Moses", C: "Caleb", D: "Gideon" },
+                answer: "A",
+                reference: "Joshua 6",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who had long hair that gave him strength?",
+                options: { A: "Samson", B: "Absalom", C: "David", D: "Saul" },
+                answer: "A",
+                reference: "Judges 16:17",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the loyal daughter-in-law of Naomi?",
+                options: { A: "Ruth", B: "Orpah", C: "Esther", D: "Rahab" },
+                answer: "A",
+                reference: "Ruth 1:16",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the boy who heard God calling him in the night?",
+                options: { A: "Samuel", B: "David", C: "Solomon", D: "Josiah" },
+                answer: "A",
+                reference: "1 Samuel 3:4",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who played the harp for King Saul?",
+                options: { A: "David", B: "Jonathan", C: "Samuel", D: "Jesse" },
+                answer: "A",
+                reference: "1 Samuel 16:23",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who built the Temple?",
+                options: { A: "Solomon", B: "David", C: "Saul", D: "Hezekiah" },
+                answer: "A",
+                reference: "1 Kings 6",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the prophet fed by ravens?",
+                options: { A: "Elijah", B: "Elisha", C: "Isaiah", D: "Jeremiah" },
+                answer: "A",
+                reference: "1 Kings 17:6",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the queen who saved her people?",
+                options: { A: "Esther", B: "Ruth", C: "Naomi", D: "Deborah" },
+                answer: "A",
+                reference: "Esther 7",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who wrote the Psalms?",
+                options: { A: "David", B: "Solomon", C: "Moses", D: "Abraham" },
+                answer: "A",
+                reference: "Psalms",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who wrote Proverbs?",
+                options: { A: "Solomon", B: "David", C: "Samuel", D: "Job" },
+                answer: "A",
+                reference: "Proverbs 1:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the weeping prophet?",
+                options: { A: "Jeremiah", B: "Isaiah", C: "Ezekiel", D: "Daniel" },
+                answer: "A",
+                reference: "Jeremiah",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the forerunner of Christ?",
+                options: { A: "John the Baptist", B: "Elijah", C: "Isaiah", D: "Malachi" },
+                answer: "A",
+                reference: "Mark 1:2",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who climbed a sycamore tree to see Jesus?",
+                options: { A: "Zacchaeus", B: "Bartimaeus", C: "Nicodemus", D: "Lazarus" },
+                answer: "A",
+                reference: "Luke 19:4",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the tax collector disciple?",
+                options: { A: "Matthew", B: "Peter", C: "John", D: "James" },
+                answer: "A",
+                reference: "Matthew 9:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the beloved disciple?",
+                options: { A: "John", B: "Peter", C: "James", D: "Andrew" },
+                answer: "A",
+                reference: "John 13:23",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the doctor who wrote a Gospel?",
+                options: { A: "Luke", B: "Mark", C: "Matthew", D: "John" },
+                answer: "A",
+                reference: "Colossians 4:14",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the tentmaker?",
+                options: { A: "Paul", B: "Peter", C: "Barnabas", D: "Silas" },
+                answer: "A",
+                reference: "Acts 18:3",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was the seller of purple?",
+                options: { A: "Lydia", B: "Priscilla", C: "Phoebe", D: "Dorcas" },
+                answer: "A",
+                reference: "Acts 16:14",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who was raised from the dead by Jesus?",
+                options: { A: "Lazarus", B: "Nicodemus", C: "Zacchaeus", D: "Joseph" },
+                answer: "A",
+                reference: "John 11:43",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "What is the shortest verse in the Bible?",
+                options: { A: "Jesus wept", B: "God is love", C: "Pray always", D: "Rejoice evermore" },
+                answer: "A",
+                reference: "John 11:35",
+                category: "New Testament"
+            },
+            {
+                difficulty: "easy",
+                text: "Who visited Jesus at night?",
+                options: { A: "Nicodemus", B: "Joseph of Arimathea", C: "Gamaliel", D: "Caiaphas" },
+                answer: "A",
+                reference: "John 3:2",
+                category: "New Testament"
+            },
+            // ==== NEW BATCH 2 (Intermediate) ====
+            {
+                difficulty: "intermediate",
+                text: "How many foxes did Samson catch?",
+                options: { A: "300", B: "100", C: "50", D: "12" },
+                answer: "A",
+                reference: "Judges 15:4",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "What did Gideon use to test God?",
+                options: { A: "A fleece", B: "A lamb", C: "A staff", D: "A stone" },
+                answer: "A",
+                reference: "Judges 6:37",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the mother of Samuel?",
+                options: { A: "Hannah", B: "Peninnah", C: "Sarah", D: "Rachel" },
+                answer: "A",
+                reference: "1 Samuel 1:20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the first king of the Northern Kingdom?",
+                options: { A: "Jeroboam", B: "Rehoboam", C: "Ahab", D: "Jehu" },
+                answer: "A",
+                reference: "1 Kings 12:20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the king who had 700 wives?",
+                options: { A: "Solomon", B: "David", C: "Ahab", D: "Hezekiah" },
+                answer: "A",
+                reference: "1 Kings 11:3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who healed Naaman of leprosy?",
+                options: { A: "Elisha", B: "Elijah", C: "Gehazi", D: "Isaiah" },
+                answer: "A",
+                reference: "2 Kings 5:10",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "How old was Josiah when he became king?",
+                options: { A: "8", B: "12", C: "20", D: "30" },
+                answer: "A",
+                reference: "2 Kings 22:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "What was Nehemiah's job?",
+                options: { A: "Cupbearer", B: "Baker", C: "Scribe", D: "Priest" },
+                answer: "A",
+                reference: "Nehemiah 1:11",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was Esther's cousin?",
+                options: { A: "Mordecai", B: "Haman", C: "Xerxes", D: "Cyrus" },
+                answer: "A",
+                reference: "Esther 2:7",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "How many friends came to comfort Job?",
+                options: { A: "3", B: "7", C: "12", D: "40" },
+                answer: "A",
+                reference: "Job 2:11",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who saw the Lord high and lifted up?",
+                options: { A: "Isaiah", B: "Jeremiah", C: "Ezekiel", D: "Daniel" },
+                answer: "A",
+                reference: "Isaiah 6:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was Jeremiah's scribe?",
+                options: { A: "Baruch", B: "Ebed-Melech", C: "Gedaliah", D: "Pashhur" },
+                answer: "A",
+                reference: "Jeremiah 36:4",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who saw a wheel within a wheel?",
+                options: { A: "Ezekiel", B: "Daniel", C: "Isaiah", D: "Zechariah" },
+                answer: "A",
+                reference: "Ezekiel 1:16",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who refused to eat the king's food?",
+                options: { A: "Daniel", B: "Joseph", C: "Nehemiah", D: "Ezra" },
+                answer: "A",
+                reference: "Daniel 1:8",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was told to marry a prostitute?",
+                options: { A: "Hosea", B: "Amos", C: "Joel", D: "Jonah" },
+                answer: "A",
+                reference: "Hosea 1:2",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who ran away to Tarshish?",
+                options: { A: "Jonah", B: "Paul", C: "Elijah", D: "Peter" },
+                answer: "A",
+                reference: "Jonah 1:3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which prophet spoke about the tithe?",
+                options: { A: "Malachi", B: "Haggai", C: "Zechariah", D: "Micah" },
+                answer: "A",
+                reference: "Malachi 3:10",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "What did John the Baptist eat?",
+                options: { A: "Locusts and honey", B: "Bread and fish", C: "Figs and grapes", D: "Manna" },
+                answer: "A",
+                reference: "Matthew 3:4",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "How many days did Jesus fast in the wilderness?",
+                options: { A: "40", B: "7", C: "12", D: "3" },
+                answer: "A",
+                reference: "Matthew 4:2",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who appeared with Jesus at the Transfiguration?",
+                options: { A: "Moses and Elijah", B: "Abraham and David", C: "Enoch and Elijah", D: "Moses and Aaron" },
+                answer: "A",
+                reference: "Matthew 17:3",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who helped the man beaten by robbers?",
+                options: { A: "Samaritan", B: "Priest", C: "Levite", D: "Pharisee" },
+                answer: "A",
+                reference: "Luke 10:33",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "What did the prodigal son eat?",
+                options: { A: "Pig pods", B: "Bread", C: "Corn", D: "Grass" },
+                answer: "A",
+                reference: "Luke 15:16",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "How many days was Lazarus dead?",
+                options: { A: "4", B: "3", C: "1", D: "7" },
+                answer: "A",
+                reference: "John 11:39",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who chose the better portion?",
+                options: { A: "Mary", B: "Martha", C: "Elizabeth", D: "Salome" },
+                answer: "A",
+                reference: "Luke 10:42",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "What kind of tree did Zacchaeus climb?",
+                options: { A: "Sycamore", B: "Oak", C: "Fig", D: "Olive" },
+                answer: "A",
+                reference: "Luke 19:4",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "How much was Judas paid?",
+                options: { A: "30 pieces of silver", B: "20 pieces of gold", C: "100 denarii", D: "50 shekels" },
+                answer: "A",
+                reference: "Matthew 26:15",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who had a dream about Jesus being innocent?",
+                options: { A: "Pilate's wife", B: "Herod's wife", C: "Mary Magdalene", D: "Salome" },
+                answer: "A",
+                reference: "Matthew 27:19",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who carried Jesus' cross?",
+                options: { A: "Simon of Cyrene", B: "Joseph of Arimathea", C: "Nicodemus", D: "John" },
+                answer: "A",
+                reference: "Matthew 27:32",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "What does Golgotha mean?",
+                options: { A: "Place of the Skull", B: "Place of Peace", C: "Mount of Olives", D: "Holy Hill" },
+                answer: "A",
+                reference: "Mark 15:22",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "What appeared on the disciples' heads at Pentecost?",
+                options: { A: "Tongues of fire", B: "Doves", C: "Halos", D: "Stars" },
+                answer: "A",
+                reference: "Acts 2:3",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who lied to the Holy Spirit and died?",
+                options: { A: "Ananias and Sapphira", B: "Aquila and Priscilla", C: "Simon and Jude", D: "Felix and Drusilla" },
+                answer: "A",
+                reference: "Acts 5:1-10",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who saw heaven open before being stoned?",
+                options: { A: "Stephen", B: "James", C: "Peter", D: "Paul" },
+                answer: "A",
+                reference: "Acts 7:55",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who explained the Scripture to the Ethiopian eunuch?",
+                options: { A: "Philip", B: "Peter", C: "Paul", D: "Stephen" },
+                answer: "A",
+                reference: "Acts 8:35",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was raised from the dead by Peter?",
+                options: { A: "Dorcas (Tabitha)", B: "Lydia", C: "Priscilla", D: "Rhoda" },
+                answer: "A",
+                reference: "Acts 9:40",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the first Gentile convert?",
+                options: { A: "Cornelius", B: "Luke", C: "Titus", D: "Timothy" },
+                answer: "A",
+                reference: "Acts 10",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "What did Peter see in his vision?",
+                options: { A: "A sheet with animals", B: "A ladder to heaven", C: "A burning bush", D: "A golden lampstand" },
+                answer: "A",
+                reference: "Acts 10:11",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was Paul's teacher?",
+                options: { A: "Gamaliel", B: "Caiaphas", C: "Annas", D: "Nicodemus" },
+                answer: "A",
+                reference: "Acts 22:3",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was called the Son of Encouragement?",
+                options: { A: "Barnabas", B: "Silas", C: "Timothy", D: "Luke" },
+                answer: "A",
+                reference: "Acts 4:36",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Where was Paul shipwrecked?",
+                options: { A: "Malta", B: "Crete", C: "Cyprus", D: "Sicily" },
+                answer: "A",
+                reference: "Acts 28:1",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "How many fruits of the Spirit are there?",
+                options: { A: "9", B: "7", C: "12", D: "3" },
+                answer: "A",
+                reference: "Galatians 5:22-23",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which is the shield in the Armor of God?",
+                options: { A: "Faith", B: "Truth", C: "Righteousness", D: "Salvation" },
+                answer: "A",
+                reference: "Ephesians 6:16",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the King of Salem?",
+                options: { A: "Melchizedek", B: "Abimelech", C: "Og", D: "Sihon" },
+                answer: "A",
+                reference: "Hebrews 7:1",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Faith without works is what?",
+                options: { A: "Dead", B: "Alive", C: "Weak", D: "Strong" },
+                answer: "A",
+                reference: "James 2:26",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Which church was lukewarm?",
+                options: { A: "Laodicea", B: "Ephesus", C: "Smyrna", D: "Philadelphia" },
+                answer: "A",
+                reference: "Revelation 3:16",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who is the Alpha and Omega?",
+                options: { A: "Jesus", B: "Moses", C: "Abraham", D: "David" },
+                answer: "A",
+                reference: "Revelation 22:13",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who had a donkey that spoke?",
+                options: { A: "Balaam", B: "Balak", C: "Moses", D: "Aaron" },
+                answer: "A",
+                reference: "Numbers 22:28",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who stole a golden wedge from Jericho?",
+                options: { A: "Achan", B: "Carmi", C: "Zimri", D: "Korah" },
+                answer: "A",
+                reference: "Joshua 7:21",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the left-handed judge?",
+                options: { A: "Ehud", B: "Eglon", C: "Shamgar", D: "Barak" },
+                answer: "A",
+                reference: "Judges 3:15",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who killed Sisera?",
+                options: { A: "Jael", B: "Deborah", C: "Rahab", D: "Ruth" },
+                answer: "A",
+                reference: "Judges 4:21",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the great-grandmother of David?",
+                options: { A: "Ruth", B: "Rahab", C: "Naomi", D: "Tamar" },
+                answer: "A",
+                reference: "Ruth 4:17",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who died when he touched the Ark?",
+                options: { A: "Uzzah", B: "Ahio", C: "Obed-Edom", D: "Michal" },
+                answer: "A",
+                reference: "2 Samuel 6:7",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the son of Jonathan who was lame?",
+                options: { A: "Mephibosheth", B: "Ishbosheth", C: "Absalom", D: "Adonijah" },
+                answer: "A",
+                reference: "2 Samuel 4:4",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the queen who visited Solomon?",
+                options: { A: "Sheba", B: "Esther", C: "Athaliah", D: "Jezebel" },
+                answer: "A",
+                reference: "1 Kings 10:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the wicked queen of Israel?",
+                options: { A: "Jezebel", B: "Athaliah", C: "Herodias", D: "Vashti" },
+                answer: "A",
+                reference: "1 Kings 16:31",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who went up to heaven in a whirlwind?",
+                options: { A: "Elijah", B: "Elisha", C: "Enoch", D: "Moses" },
+                answer: "A",
+                reference: "2 Kings 2:11",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who made the axe head float?",
+                options: { A: "Elisha", B: "Elijah", C: "Isaiah", D: "Jeremiah" },
+                answer: "A",
+                reference: "2 Kings 6:6",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the king who prayed for longer life?",
+                options: { A: "Hezekiah", B: "Manasseh", C: "Josiah", D: "Ahaz" },
+                answer: "A",
+                reference: "2 Kings 20:6",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who rebuilt the walls of Jerusalem?",
+                options: { A: "Nehemiah", B: "Ezra", C: "Zerubbabel", D: "Joshua" },
+                answer: "A",
+                reference: "Nehemiah 2:17",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the scribe who read the Law?",
+                options: { A: "Ezra", B: "Nehemiah", C: "Haggai", D: "Zechariah" },
+                answer: "A",
+                reference: "Nehemiah 8:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who said 'I know that my Redeemer lives'?",
+                options: { A: "Job", B: "David", C: "Solomon", D: "Abraham" },
+                answer: "A",
+                reference: "Job 19:25",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who wrote Ecclesiastes?",
+                options: { A: "Solomon", B: "David", C: "Moses", D: "Samuel" },
+                answer: "A",
+                reference: "Ecclesiastes 1:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the prophet of the dry bones?",
+                options: { A: "Ezekiel", B: "Jeremiah", C: "Isaiah", D: "Daniel" },
+                answer: "A",
+                reference: "Ezekiel 37",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the king who saw the writing on the wall?",
+                options: { A: "Belshazzar", B: "Nebuchadnezzar", C: "Darius", D: "Cyrus" },
+                answer: "A",
+                reference: "Daniel 5:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the prophet of social justice?",
+                options: { A: "Amos", B: "Joel", C: "Obadiah", D: "Jonah" },
+                answer: "A",
+                reference: "Amos 5:24",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the prophet who questioned God?",
+                options: { A: "Habakkuk", B: "Zephaniah", C: "Haggai", D: "Malachi" },
+                answer: "A",
+                reference: "Habakkuk 1:2",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the sister of Lazarus?",
+                options: { A: "Martha", B: "Mary Magdalene", C: "Salome", D: "Joanna" },
+                answer: "A",
+                reference: "John 11:1",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the mother of John Mark?",
+                options: { A: "Mary", B: "Elizabeth", C: "Lydia", D: "Priscilla" },
+                answer: "A",
+                reference: "Acts 12:12",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who fell out of a window while Paul preached?",
+                options: { A: "Eutychus", B: "Timothy", C: "Titus", D: "Silas" },
+                answer: "A",
+                reference: "Acts 20:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "intermediate",
+                text: "Who was the silversmith who caused a riot?",
+                options: { A: "Demetrius", B: "Alexander", C: "Gaius", D: "Aristarchus" },
+                answer: "A",
+                reference: "Acts 19:24",
+                category: "New Testament"
+            },
+            // ==== NEW BATCH 3 (Advanced) ====
+            {
+                difficulty: "advanced",
+                text: "How old was Methuselah when he died?",
+                options: { A: "969", B: "950", C: "930", D: "900" },
+                answer: "A",
+                reference: "Genesis 5:27",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the father of Noah?",
+                options: { A: "Lamech", B: "Methuselah", C: "Enoch", D: "Jared" },
+                answer: "A",
+                reference: "Genesis 5:28-29",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was a mighty hunter before the Lord?",
+                options: { A: "Nimrod", B: "Esau", C: "Ishmael", D: "Canaan" },
+                answer: "A",
+                reference: "Genesis 10:9",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was Abraham's second wife?",
+                options: { A: "Keturah", B: "Hagar", C: "Sarah", D: "Milcah" },
+                answer: "A",
+                reference: "Genesis 25:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who were Esau's wives?",
+                options: { A: "Hittites", B: "Egyptians", C: "Moabites", D: "Ammonites" },
+                answer: "A",
+                reference: "Genesis 26:34",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the daughter of Jacob?",
+                options: { A: "Dinah", B: "Leah", C: "Rachel", D: "Zilpah" },
+                answer: "A",
+                reference: "Genesis 30:21",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who lied about Joseph?",
+                options: { A: "Potiphar's wife", B: "Pharaoh's daughter", C: "Tamar", D: "Dinah" },
+                answer: "A",
+                reference: "Genesis 39:14",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who dreamed of a vine with three branches?",
+                options: { A: "The cupbearer", B: "The baker", C: "Pharaoh", D: "Joseph" },
+                answer: "A",
+                reference: "Genesis 40:9",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was Joseph's firstborn son?",
+                options: { A: "Manasseh", B: "Ephraim", C: "Benjamin", D: "Judah" },
+                answer: "A",
+                reference: "Genesis 41:51",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who were the Hebrew midwives?",
+                options: { A: "Shiprah and Puah", B: "Jochebed and Miriam", C: "Zipporah and Elisheba", D: "Hagar and Keturah" },
+                answer: "A",
+                reference: "Exodus 1:15",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was Moses' father-in-law?",
+                options: { A: "Jethro", B: "Aaron", C: "Amram", D: "Nun" },
+                answer: "A",
+                reference: "Exodus 3:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was Moses' son?",
+                options: { A: "Gershom", B: "Eleazar", C: "Phinehas", D: "Nadab" },
+                answer: "A",
+                reference: "Exodus 2:22",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who offered strange fire to the Lord?",
+                options: { A: "Nadab and Abihu", B: "Hophni and Phinehas", C: "Korah and Dathan", D: "Zimri and Cozbi" },
+                answer: "A",
+                reference: "Leviticus 10:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was swallowed by the earth?",
+                options: { A: "Korah", B: "Achan", C: "Balaam", D: "Zimri" },
+                answer: "A",
+                reference: "Numbers 16:32",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the King of Bashan?",
+                options: { A: "Og", B: "Sihon", C: "Balak", D: "Eglon" },
+                answer: "A",
+                reference: "Numbers 21:33",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "What color was the cord Rahab tied in the window?",
+                options: { A: "Scarlet", B: "Blue", C: "Purple", D: "White" },
+                answer: "A",
+                reference: "Joshua 2:18",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who made a rash vow about his daughter?",
+                options: { A: "Jephthah", B: "Gideon", C: "Samson", D: "Jair" },
+                answer: "A",
+                reference: "Judges 11:30",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "What does Ichabod mean?",
+                options: { A: "The glory has departed", B: "God is with us", C: "Son of sorrow", D: "Laughter" },
+                answer: "A",
+                reference: "1 Samuel 4:21",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the king of the Amalekites hacked to pieces?",
+                options: { A: "Agag", B: "Doeg", C: "Achish", D: "Nahash" },
+                answer: "A",
+                reference: "1 Samuel 15:33",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who summoned the spirit of Samuel?",
+                options: { A: "Witch of Endor", B: "Saul", C: "David", D: "Jonathan" },
+                answer: "A",
+                reference: "1 Samuel 28:7",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was Uriah?",
+                options: { A: "A Hittite", B: "A Jebusite", C: "An Amorite", D: "A Philistine" },
+                answer: "A",
+                reference: "2 Samuel 11:3",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who caught his hair in a tree?",
+                options: { A: "Absalom", B: "Amnon", C: "Adonijah", D: "Joab" },
+                answer: "A",
+                reference: "2 Samuel 18:9",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who grabbed the horns of the altar?",
+                options: { A: "Adonijah", B: "Absalom", C: "Joab", D: "Shimei" },
+                answer: "A",
+                reference: "1 Kings 1:50",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who said 'My father chastised you with whips, but I will chastise you with scorpions'?",
+                options: { A: "Rehoboam", B: "Jeroboam", C: "Solomon", D: "Ahab" },
+                answer: "A",
+                reference: "1 Kings 12:11",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Where did Jeroboam set up golden calves?",
+                options: { A: "Dan and Bethel", B: "Jerusalem and Samaria", C: "Shiloh and Gilgal", D: "Hebron and Shechem" },
+                answer: "A",
+                reference: "1 Kings 12:29",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who built Samaria?",
+                options: { A: "Omri", B: "Ahab", C: "Jeroboam", D: "Baasha" },
+                answer: "A",
+                reference: "1 Kings 16:24",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "How did Ahab die?",
+                options: { A: "Struck by a random arrow", B: "Stabbed by Jehu", C: "Fell from a window", D: "Eaten by dogs" },
+                answer: "A",
+                reference: "1 Kings 22:34",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who drove his chariot furiously?",
+                options: { A: "Jehu", B: "Ahab", C: "Joram", D: "Ahaziah" },
+                answer: "A",
+                reference: "2 Kings 9:20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the usurper queen of Judah?",
+                options: { A: "Athaliah", B: "Jezebel", C: "Maacah", D: "Azubah" },
+                answer: "A",
+                reference: "2 Kings 11:1",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was struck with leprosy for offering incense?",
+                options: { A: "Uzziah", B: "Ahaz", C: "Jotham", D: "Amaziah" },
+                answer: "A",
+                reference: "2 Chronicles 26:19",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who built a tunnel to bring water into Jerusalem?",
+                options: { A: "Hezekiah", B: "Josiah", C: "David", D: "Solomon" },
+                answer: "A",
+                reference: "2 Kings 20:20",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the most evil king of Judah who later repented?",
+                options: { A: "Manasseh", B: "Amon", C: "Ahaz", D: "Jehoiakim" },
+                answer: "A",
+                reference: "2 Chronicles 33:12",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Where did Josiah die?",
+                options: { A: "Megiddo", B: "Jerusalem", C: "Carchemish", D: "Samaria" },
+                answer: "A",
+                reference: "2 Kings 23:29",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the last king of Judah, blinded by Babylon?",
+                options: { A: "Zedekiah", B: "Jehoiachin", C: "Jehoiakim", D: "Jehoahaz" },
+                answer: "A",
+                reference: "2 Kings 25:7",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was appointed governor of Judah by Babylon?",
+                options: { A: "Gedaliah", B: "Ishmael", C: "Johanan", D: "Seraiah" },
+                answer: "A",
+                reference: "2 Kings 25:22",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who led the rebuilding of the temple?",
+                options: { A: "Zerubbabel", B: "Ezra", C: "Nehemiah", D: "Joshua" },
+                answer: "A",
+                reference: "Ezra 3:2",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Which prophet had eight night visions?",
+                options: { A: "Zechariah", B: "Haggai", C: "Malachi", D: "Joel" },
+                answer: "A",
+                reference: "Zechariah 1-6",
+                category: "Old Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was Matthew's other name?",
+                options: { A: "Levi", B: "Thaddaeus", C: "Lebbaeus", D: "Simon" },
+                answer: "A",
+                reference: "Luke 5:27",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the cousin of Mark?",
+                options: { A: "Barnabas", B: "Paul", C: "Peter", D: "Luke" },
+                answer: "A",
+                reference: "Colossians 4:10",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "What was Luke's profession?",
+                options: { A: "Physician", B: "Tax collector", C: "Fisherman", D: "Tentmaker" },
+                answer: "A",
+                reference: "Colossians 4:14",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Where was John exiled?",
+                options: { A: "Patmos", B: "Cyprus", C: "Crete", D: "Malta" },
+                answer: "A",
+                reference: "Revelation 1:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who replaced Judas Iscariot?",
+                options: { A: "Matthias", B: "Barsabbas", C: "Justus", D: "Paul" },
+                answer: "A",
+                reference: "Acts 1:26",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who advised the Sanhedrin to leave the apostles alone?",
+                options: { A: "Gamaliel", B: "Caiaphas", C: "Annas", D: "Nicodemus" },
+                answer: "A",
+                reference: "Acts 5:34",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who tried to buy the power of the Holy Spirit?",
+                options: { A: "Simon Magus", B: "Elymas", C: "Bar-Jesus", D: "Demetrius" },
+                answer: "A",
+                reference: "Acts 8:18",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who had four daughters who prophesied?",
+                options: { A: "Philip the Evangelist", B: "Peter", C: "Paul", D: "Agabus" },
+                answer: "A",
+                reference: "Acts 21:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who predicted a famine using a belt?",
+                options: { A: "Agabus", B: "Silas", C: "Barnabas", D: "Timothy" },
+                answer: "A",
+                reference: "Acts 21:11",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who said 'Almost thou persuadest me to be a Christian'?",
+                options: { A: "Agrippa", B: "Felix", C: "Festus", D: "Caesar" },
+                answer: "A",
+                reference: "Acts 26:28",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the chief man of the island of Malta?",
+                options: { A: "Publius", B: "Julius", C: "Lysias", D: "Tertullus" },
+                answer: "A",
+                reference: "Acts 28:7",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the runaway slave Paul sent back?",
+                options: { A: "Onesimus", B: "Philemon", C: "Tychicus", D: "Epaphras" },
+                answer: "A",
+                reference: "Philemon 1:10",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who was the messenger to the Philippians who got sick?",
+                options: { A: "Epaphroditus", B: "Timothy", C: "Titus", D: "Silas" },
+                answer: "A",
+                reference: "Philippians 2:25",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who forsook Paul because he loved this present world?",
+                options: { A: "Demas", B: "Luke", C: "Mark", D: "Crescens" },
+                answer: "A",
+                reference: "2 Timothy 4:10",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who loved to have the preeminence?",
+                options: { A: "Diotrephes", B: "Gaius", C: "Demetrius", D: "John" },
+                answer: "A",
+                reference: "3 John 1:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "Who disputed with the devil about the body of Moses?",
+                options: { A: "Michael", B: "Gabriel", C: "Raphael", D: "Uriel" },
+                answer: "A",
+                reference: "Jude 1:9",
+                category: "New Testament"
+            },
+            {
+                difficulty: "advanced",
+                text: "What was the name of the star that made the waters bitter?",
+                options: { A: "Wormwood", B: "Gall", C: "Hemlock", D: "Bitterness" },
+                answer: "A",
+                reference: "Revelation 8:11",
+                category: "New Testament"
+            },
+        ];
+
+        const difficultyPoints = { easy: 1, intermediate: 2, advanced: 3 };
+
+        const players = []; // { name, easyCorrect, intermediateCorrect, advancedCorrect, totalPoints }
+        let currentPlayerIndex = 0;
+        let currentQuestion = null;
+        let currentChoice = null;
+        let totalQuestionsAnswered = 0;
+
+        // Question pools for shuffle-without-replacement
+        const questionPools = {
+            easy: [],
+            intermediate: [],
+            advanced: [],
+            mixed: []
+        };
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            // While there remain elements to shuffle.
+            while (currentIndex != 0) {
+                // Pick a remaining element.
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                // And swap it with the current element.
+                [array[currentIndex], array[randomIndex]] = [
+                    array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // DOM elements
+        const playerNameInput = document.getElementById("playerName");
+        const addPlayerBtn = document.getElementById("addPlayerBtn");
+        const playersContainer = document.getElementById("playersContainer");
+        const difficultySelect = document.getElementById("difficultySelect");
+        const nextQuestionBtn = document.getElementById("nextQuestionBtn");
+        const questionTextEl = document.getElementById("questionText");
+        const questionMetaEl = document.getElementById("questionMeta");
+        const optionsContainer = document.getElementById("optionsContainer");
+        const feedbackEl = document.getElementById("feedback");
+        const submitAnswerBtn = document.getElementById("submitAnswerBtn");
+        const currentPlayerLabel = document.getElementById("currentPlayerLabel");
+        const scoreboardBody = document.getElementById("scoreboardBody");
+        const questionsCountEl = document.getElementById("questionsCount");
+
+        function sanitizeName(name) {
+            return name.trim().replace(/\s+/g, " ");
+        }
+
+        function addPlayer() {
+            const name = sanitizeName(playerNameInput.value);
+            if (!name) {
+                alert("Enter a name first.");
+                return;
+            }
+            if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+                alert("That name is already in use.");
+                return;
+            }
+            players.push({
+                name,
+                easyCorrect: 0,
+                intermediateCorrect: 0,
+                advancedCorrect: 0,
+                totalPoints: 0
+            });
+            playerNameInput.value = "";
+            renderPlayers();
+            renderScoreboard();
+            updateCurrentPlayerLabel();
+        }
+
+        function renderPlayers() {
+            playersContainer.innerHTML = "";
+            players.forEach((p, ix) => {
+                const div = document.createElement("div");
+                div.className = "player-pill" + (ix === currentPlayerIndex ? " current" : "");
+                div.textContent = p.name;
+                div.addEventListener("click", () => {
+                    currentPlayerIndex = ix;
+                    renderPlayers();
+                    updateCurrentPlayerLabel();
+                });
+                playersContainer.appendChild(div);
+            });
+            if (!players.length) {
+                playersContainer.innerHTML = '<span class="muted">No players yet.</span>';
+            }
+        }
+
+        function updateCurrentPlayerLabel() {
+            if (!players.length) {
+                currentPlayerLabel.textContent = "No players yet.";
+                currentPlayerLabel.className = "muted";
+                return;
+            }
+            currentPlayerLabel.textContent = "Current player: " + players[currentPlayerIndex].name;
+            currentPlayerLabel.className = "muted";
+        }
+
+        function getQuestionsByDifficulty(diff) {
+            return questions.filter(q => q.difficulty === diff);
+        }
+
+        function randomItem(arr) {
+            if (!arr.length) return null;
+            const ix = Math.floor(Math.random() * arr.length);
+            return arr[ix];
+        }
+
+        function loadNextQuestion() {
+            if (!players.length) {
+                alert("Add at least one player before starting.");
+                return;
+            }
+            const mode = difficultySelect.value;
+            let chosen;
+
+            // Refill pool if empty
+            if (questionPools[mode].length === 0) {
+                let newPool;
+                if (mode === "mixed") {
+                    newPool = [...questions];
+                } else {
+                    newPool = getQuestionsByDifficulty(mode);
+                }
+
+                if (newPool.length === 0) {
+                    alert("No questions available for this difficulty.");
+                    return;
+                }
+
+                // Shuffle and assign
+                questionPools[mode] = shuffle([...newPool]);
+            }
+
+            // Pop the next question
+            chosen = questionPools[mode].pop();
+
+            currentQuestion = chosen;
+            currentChoice = null;
+            renderQuestion();
+            resetFeedback();
+        }
+
+        function renderQuestion() {
+            if (!currentQuestion) {
+                questionTextEl.textContent = "No question loaded.";
+                questionMetaEl.textContent = "Category: — | Difficulty: —";
+                optionsContainer.innerHTML = "";
+                return;
+            }
+            questionTextEl.textContent = currentQuestion.text;
+            questionMetaEl.textContent =
+                "Category: " + currentQuestion.category +
+                " | Difficulty: " + currentQuestion.difficulty.charAt(0).toUpperCase() + currentQuestion.difficulty.slice(1);
+
+            optionsContainer.innerHTML = "";
+
+            // Prepare options array
+            const optionsArr = ["A", "B", "C", "D"].map(key => ({
+                originalKey: key,
+                text: currentQuestion.options[key]
+            }));
+
+            // Shuffle options for display
+            shuffle(optionsArr);
+
+            // Render buttons
+            const labels = ["A", "B", "C", "D"];
+            optionsArr.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                // Display label (A, B, C, D) based on position, but text from the shuffled option
+                btn.textContent = labels[index] + ") " + opt.text;
+                // Store the original key (A, B, C, D) to check against correct answer
+                btn.dataset.key = opt.originalKey;
+                btn.addEventListener("click", () => {
+                    currentChoice = opt.originalKey;
+                    updateOptionSelection();
+                });
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function updateOptionSelection() {
+            const buttons = optionsContainer.querySelectorAll(".option-btn");
+            buttons.forEach(btn => {
+                btn.classList.remove("selected");
+                if (btn.dataset.key === currentChoice) {
+                    btn.classList.add("selected");
+                }
+            });
+        }
+
+        function resetFeedback() {
+            feedbackEl.textContent = "No answer submitted yet.";
+            feedbackEl.className = "feedback info";
+            const buttons = optionsContainer.querySelectorAll(".option-btn");
+            buttons.forEach(btn => btn.classList.remove("correct", "incorrect"));
+        }
+
+        function submitAnswer() {
+            if (!currentQuestion) {
+                alert("Click 'Next Question' first.");
+                return;
+            }
+            if (!currentChoice) {
+                alert("Choose an answer first.");
+                return;
+            }
+
+            const correct = currentChoice === currentQuestion.answer;
+            const buttons = optionsContainer.querySelectorAll(".option-btn");
+            buttons.forEach(btn => {
+                const key = btn.dataset.key;
+                if (key === currentQuestion.answer) {
+                    btn.classList.add("correct");
+                } else if (key === currentChoice && !correct) {
+                    btn.classList.add("incorrect");
+                }
+            });
+
+            const qDiff = currentQuestion.difficulty;
+
+            if (correct) {
+                awardPoints(qDiff);
+                feedbackEl.textContent = `Correct! (+${difficultyPoints[qDiff]} pts)`;
+                feedbackEl.className = "feedback correct";
+            } else {
+                feedbackEl.textContent = "Incorrect. Correct answer: " + currentQuestion.answer;
+                feedbackEl.className = "feedback incorrect";
+                totalQuestionsAnswered++;
+                renderScoreboard();
+            }
+
+            // Reveal reference
+            questionMetaEl.textContent =
+                "Reference: " + currentQuestion.reference +
+                " | Category: " + currentQuestion.category +
+                " | Difficulty: " + currentQuestion.difficulty.charAt(0).toUpperCase() + currentQuestion.difficulty.slice(1);
+
+            rotatePlayer();
+        }
+
+        function awardPoints(diff) {
+            if (!players.length) return;
+            const p = players[currentPlayerIndex];
+            const pts = difficultyPoints[diff] || 0;
+
+            if (diff === "easy") p.easyCorrect++;
+            if (diff === "intermediate") p.intermediateCorrect++;
+            if (diff === "advanced") p.advancedCorrect++;
+            p.totalPoints += pts;
+            totalQuestionsAnswered++;
+            renderScoreboard();
+        }
+
+        function rotatePlayer() {
+            if (!players.length) return;
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+            renderPlayers();
+            updateCurrentPlayerLabel();
+        }
+
+        function renderScoreboard() {
+            scoreboardBody.innerHTML = "";
+            if (!players.length) {
+                scoreboardBody.innerHTML = '<tr><td colspan="5" class="muted">No players yet.</td></tr>';
+                questionsCountEl.textContent = "Questions answered: " + totalQuestionsAnswered;
+                return;
+            }
+            const maxPoints = Math.max(...players.map(p => p.totalPoints));
+            players.forEach(p => {
+                const tr = document.createElement("tr");
+                if (p.totalPoints === maxPoints && maxPoints > 0) tr.classList.add("highlight");
+                tr.innerHTML = `
+          <td>${p.name}</td>
+          <td>${p.easyCorrect}</td>
+          <td>${p.intermediateCorrect}</td>
+          <td>${p.advancedCorrect}</td>
+          <td>${p.totalPoints}</td>
+        `;
+                scoreboardBody.appendChild(tr);
+            });
+            questionsCountEl.textContent = "Questions answered: " + totalQuestionsAnswered;
+        }
+
+        // Event wiring
+        addPlayerBtn.addEventListener("click", addPlayer);
+        playerNameInput.addEventListener("keydown", e => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                addPlayer();
+            }
+        });
+        nextQuestionBtn.addEventListener("click", loadNextQuestion);
+        submitAnswerBtn.addEventListener("click", submitAnswer);
+
+        // Initial render
+        renderPlayers();
+        renderScoreboard();
+        updateCurrentPlayerLabel();
+    </script>
+</body>
+
+</html>
